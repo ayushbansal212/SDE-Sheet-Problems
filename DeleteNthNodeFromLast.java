@@ -28,6 +28,7 @@ class Solution {
 }
 
 //  Time Complexity --> O(N) --> list is traversed only once
-// confusion may arise that slow is also visiting but we are traversing only till the fast pointer reaaches the null. As soon as the fast pointer reaches null we stop and return our answer. So slow and fast are moving simulataneously not seprately.
+// confusion may arise that slow is also visiting but we are traversing only till the fast pointer reaaches the null. 
+// As soon as the fast pointer reaches null we stop and return our answer. So slow and fast are moving simulataneously not seprately.
 
 // Space Complexity --> O(1) -->  no extra space for storage is used
