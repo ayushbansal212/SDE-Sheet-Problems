@@ -1,4 +1,4 @@
-    
+
 /*Definition for Singly Linked List
 class ListNode {
     int val;
