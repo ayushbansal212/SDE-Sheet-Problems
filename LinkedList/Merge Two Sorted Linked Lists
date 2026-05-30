@@ -40,4 +40,4 @@ class Solution {
 
 // time complexity --> O(M+N) --> both list are traversed completely in worst
 // case
-// Space complexity --> O(1) --> no extra space is used for storing lists
+// Space complexity --> O(1) --> no extra space is used for storing list
