@@ -46,6 +46,6 @@ class Solution {
 }
 
 // Time Complexity :- O(M + N) Both list are traverse simulataneously
-// Space Complexity :- O(1) No extra space is used 
+// Space Complexity :- O(1) No extra space is used.
 
 
