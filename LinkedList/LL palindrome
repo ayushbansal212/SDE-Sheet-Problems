@@ -1,0 +1,50 @@
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        if(head == null || head.next == null){
+            return true;
+        }
+
+        ListNode fast = head;
+        ListNode slow = head;
+
+        while(fast != null && fast.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        ListNode temp1 = reverse(head, slow);
+        ListNode temp2 = fast == null ? slow  : slow.next;
+
+        while(temp2 != null){
+            if(temp2.val != temp1.val){
+                return false;
+            }
+            temp1 = temp1.next;
+            temp2 = temp2.next;
+        }
+
+        return true;
+
+    }
+
+    public ListNode reverse(ListNode start, ListNode end){
+
+        ListNode curr = start;
+        ListNode prev = null;
+
+        while(curr != end){
+            ListNode ahead = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = ahead;
+        }
+
+        return prev;
+    }
+}
+
+// Time Complexity :- O(N) --> only reversal of nodes and travering the list is done
+// so n for traversing by slow pointer n/2 for revrsing of node 
+// n/2 for traversing in reverse list 
+// so overall O(N)
+// Space Complexity :- O(1) --> no extra space is used
