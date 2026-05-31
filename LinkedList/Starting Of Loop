@@ -1,0 +1,58 @@
+// ................................. Brute Force Approach .................................
+
+class Solution {
+    public ListNode findStartingPoint(ListNode head) {
+
+        ListNode slow = head;
+        Set<ListNode> visitedNodes = new HashSet<>();
+
+        while(slow != null && !visitedNodes.contains(slow)){
+            visitedNodes.add(slow);
+            slow = slow.next;
+        }
+
+        return slow;        
+    }
+}
+
+// Time Complexity :- O(N) --> all nodes are visited in constant time
+// Space Complexity :- O(N) --> all nodes are stored in set
+
+// ......................................................... Optimized Solution ............................................
+
+class Solution {
+    public ListNode findStartingPoint(ListNode head) {
+
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while(fast != null && fast.next != null){
+            slow = slow.next ;
+            fast = fast.next.next;
+            if(slow == fast){
+                break;
+            }
+        }
+
+        if(fast == null || fast.next == null){
+            return null;
+        }
+
+        ListNode loopStartingPoint = meetingPoint(head, fast);
+
+        return loopStartingPoint;
+    }
+
+    public ListNode meetingPoint(ListNode slow, ListNode fast){
+
+        while(slow != fast){
+            slow = slow.next;
+            fast = fast.next;
+        }
+
+        return slow;
+    }
+}
+
+// // Time Complexity :- O(N) --> All nodes are visited for constant times
+// Space Complexity :- O(1) --> No extra space is used
