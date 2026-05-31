@@ -1,0 +1,40 @@
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode ans = null;
+        ListNode temp = head;
+        ListNode dummy = new ListNode();
+        ListNode dummyTemp = dummy;
+
+        while(temp != null){
+            int count = 0;
+            ListNode start = temp;
+            while(temp != null && count < k){
+                temp = temp.next;
+                count ++;
+            }
+
+            ListNode end = temp;
+            dummyTemp.next = count == k ? reverse(start, end) : start;
+            dummyTemp = start;
+        }
+        return dummy.next;
+    }
+
+    public ListNode reverse (ListNode start , ListNode end){
+
+        ListNode prev = null;
+        ListNode curr = start;
+
+        while(curr != end){
+            ListNode ahead = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = ahead;
+        }
+
+        return prev;
+    }
+}
+
+// Time Complexity :- O(N) --> we visit the node twice once for reversing and once for k nodes count
+// Space Complexity :- O(1) --> no extra space is used
