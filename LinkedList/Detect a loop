@@ -1,0 +1,45 @@
+// Brute Force
+class Solution {
+    public boolean hasCycle(ListNode head) {
+        Set<ListNode> nodeSet = new HashSet<>();
+
+        ListNode temp = head;
+        while(temp != null && !nodeSet.contains(temp)){
+            nodeSet.add(temp);
+            temp = temp.next;
+        }
+
+        return temp != null;
+
+    }
+}
+
+// Time Complexity :-  O(N) --> all nodes are visited only once
+// Space Complexity :- O(N) --> set is used for storing the visited nodes
+
+// .................................... Optimized Solution ........................................
+
+class Solution {
+    public boolean hasCycle(ListNode head) {
+        // assume the slow pointer reach the starting of loop and fast pointer anywhere on the loop
+        // use concept of relative speed fast pointer moves 1 step wrt to slow pointer
+        // by relative speed concept the slow will be at rest 
+        // therefore fast pointer will definitely reach starting of the loop
+
+        ListNode fast = head;
+        ListNode slow = head;
+
+        while(fast != null && fast.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+            if(fast == slow){
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+// Time Complexity :- O(N) --> whole list is traversed once
+// Space Complexity :- O(1) --> no extra space is used

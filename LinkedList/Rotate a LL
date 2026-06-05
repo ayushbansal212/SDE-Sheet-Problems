@@ -1,0 +1,83 @@
+// ....................................... Brute Force Approach ...................................
+
+// class Solution {
+//     public ListNode rotateRight(ListNode head, int k) {
+
+//         if(head == null || head.next == null){
+//             return head;
+//         }
+
+//         for(int i = 0; i < k; i++){
+//             ListNode tail = head;
+//             while(tail.next.next != null){
+//                 tail = tail.next;
+//             }
+
+//             ListNode nextNode = tail.next;
+//             nextNode.next = head;
+//             tail.next = null;
+//             head = nextNode;
+//         }
+
+//         return head;
+
+//     }
+// }
+
+// Time Complexity :- O(K * N) --> list is traversed k times
+// Space Complexity :- O(1) --> constants are used only for storing some nodes
+
+// .............................. optimal solution ...................................
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+
+        // when we rotate the list the last node comes at first
+        //  so when we rotate the list by k time the last k nodes will come at first
+        // or we can say last k nodes will become a seprate list and tail of this will be attatched to head of original list
+        
+        //  approach
+        // find last kth node and attatch to the head 
+        // but imp is we need last kth - 1 node so that we can seprate the last k node list
+        // kth -1 node.next = kth node
+        // another imp thing when wwe roatate the list equal to the size of the list the list becomes as it was origninal list 
+        // so take the mod of the k 
+
+        if(head == null || head.next == null){
+            return head;
+        }
+
+        int size = 0;
+        ListNode tail = head;
+        
+        ListNode lastNode = tail;
+        while(tail != null){
+            lastNode = tail;
+            tail = tail.next;
+            size++;
+        }
+
+
+        int rotations = k % size;
+        int count = 1;
+
+        if(rotations == 0){
+            return head;
+        }
+
+        int reqdNodePos = size - rotations;
+        tail = head;
+
+        while(count < reqdNodePos){
+            tail = tail.next;
+            count++;
+        }
+
+        ListNode subHead = tail.next;
+        lastNode.next = head;
+        tail.next = null;
+        return subHead;
+    }
+}
+
+// TC :- 2 * O(N) --> we traversed the list for size calculations and then for reqd Node 
+// SC :- O(N) --> only constants are used
