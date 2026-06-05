@@ -26,6 +26,7 @@ class Solution {
     public void dfs(int row, int col, char grid[][], boolean vis[][]){
 
         int dx[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+        
         int dy[] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
         Stack<Node> st = new Stack<>();
