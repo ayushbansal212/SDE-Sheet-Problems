@@ -1,0 +1,44 @@
+class Solution {
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        
+        Stack<Integer> st = new Stack<>();
+        st.push(encode(sr, sc, image[0].length));
+        boolean vis[][] =  new boolean[image.length][image[0].length];
+        vis[sr][sc] = true;
+        int originalColor = image[sr][sc];
+
+        int dx[] = {-1, 1, 0, 0};
+        int dy[] = {0, 0, 1, -1};
+
+        while(!st.isEmpty()){
+            int encoded = st.pop();
+            int currRow = encoded/image[0].length;
+            int currCol = encoded % image[0].length;
+            System.out.println(currRow+" "+ currCol);
+            image[currRow][currCol] = newColor;
+
+            for(int i = 0; i < dx.length; i++){
+                int newRow = currRow + dx[i];
+                int newCol = currCol + dy[i];
+
+                if(newRow >= 0 && newRow < image.length && newCol >= 0 && newCol < image[0].length && !vis[newRow][newCol] && image[newRow][newCol] == originalColor){
+                    vis[newRow][newCol] = true;
+                    st.push(encode(newRow, newCol, image[0].length));
+                }
+            }
+        }
+
+        return image;
+
+    }
+
+    public int encode(int row, int col, int totalCol){
+        return (row * totalCol) + col;
+    }
+}
+
+// Time Complexity :- O(m * n + 4 * m * n) --> m * n for each cell visit and 4 * m * n for each cell 4 dir visit 
+// so overall tc is O(m * n);
+
+// Space Complexity :- O(m * n) for visited boolean array & o(Math.max(m , n )) for storing the encoded row and col in stack 
+// so overall sc is O(m * n);
