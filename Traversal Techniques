@@ -1,0 +1,72 @@
+
+class Solution {
+    public List<Integer> dfsOfGraph(int v, List<List<Integer>> edges) {
+        Stack<Integer> dfsStack = new Stack<>();
+        List<Integer> res = new ArrayList<>();
+        Set<Integer> vis = new HashSet<>();
+        dfsStack.push(0);
+
+        while(!dfsStack.isEmpty()){
+            int currNode = dfsStack.pop();
+
+            if(vis.contains(currNode)){
+                continue;
+            }
+
+            res.add(currNode);
+
+            vis.add(currNode);
+
+            if(edges.size() <= currNode){
+                continue;
+            }
+
+            for(int node : edges.get(currNode)){
+                if(!vis.contains(node)){
+                    dfsStack.push(node);
+                }
+            }
+
+        }
+
+        return res;
+    }
+
+    // Time Complexity :-   O(V + 2E)  --> O(V + E)
+    // Space Complexity :- O(v) for vis set + O(Depth) for dfs stack --> O(N)
+    
+    public List<Integer> bfsOfGraph(int v, List<List<Integer>> edges) {
+        
+        Queue<Integer> bfsQueue = new LinkedList<>();
+        List<Integer> res =  new ArrayList<>();
+        Set<Integer> vis = new HashSet<>();
+
+        bfsQueue.add(0);
+
+        while(!bfsQueue.isEmpty()){
+            int currNode = bfsQueue.poll();
+
+            if(vis.contains(currNode)){
+                continue;
+            }
+
+            res.add(currNode);
+            vis.add(currNode);
+
+            if(edges.size() <= currNode){
+                continue;
+            }
+
+            for(int node : edges.get(currNode)){
+                if(!vis.contains(node)){
+                    bfsQueue.add(node);
+                }
+            }
+
+        }
+            return res;
+        // Time Complexity :-   O(V + 2E) --> O(V + E)
+       // Space Complexity :- O(v) for vis set + O(E) for queue 
+    }
+}
+
