@@ -1,0 +1,69 @@
+class Solution {
+    public boolean isBipartite(int V, List<List<Integer>> edges) {
+        // adjacent nodes must be of different colouyr
+        // so by bfs colour the nodes alteranatively
+        // if node is already coloured with colour it means graph cant be Bipartite
+        //  at least one node is violating the bipartite requirement
+
+        List<List<Integer>> adjList = new ArrayList<>();
+        for(int i = 0; i < V; i++){
+            adjList.add(new ArrayList<>());
+        }
+
+        for(List<Integer> edge : edges){
+            int u = edge.get(0);
+            int v = edge.get(1);
+
+            adjList.get(u).add(v);
+            adjList.get(v).add(u);
+        }
+
+        int color[] = new int[V];
+        boolean vis[] = new boolean[V];
+        Arrays.fill(color, -1);
+        Queue<Integer> q = new LinkedList<>();
+        
+        for(int i = 0; i < V; i++){
+            if(color[i] != -1){
+                continue;
+            }
+            int colour = 0;
+            q.add(i);
+            color[i] = colour; 
+
+            while(!q.isEmpty()){
+                int size = q.size();
+                int count = 0;
+
+                while(count ++ < size){
+                    int curr = q.poll();
+
+                    if(color[curr] != colour){
+                        return false;
+                    }
+
+                    for(int node : adjList.get(curr)){
+                        if(color[node] == colour){
+                            return false;
+                        }
+
+                        if(color[node] == -1){
+                            color[node] = 1 - colour;
+                            q.add(node);
+                        }
+                    }
+
+                }
+                colour = 1 - colour;
+            }
+        }
+        return true;
+    }
+}
+
+// Time Complexity :- O(V + 2E) for vertices and edges traversal of each node
+//  + O(V) each node is visted by outer array for multiple components graph
+// + O(N) n is size of edges list it is traversed for making the adj list 
+// O(n) means linear time 
+
+// Space Complexity :- O(V) for vis set + O(V) for map +aO(V) for queue --- > O(V)
