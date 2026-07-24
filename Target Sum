@@ -1,0 +1,132 @@
+// ................................ RECURSION ...........................................
+class Solution {
+    public boolean isSubsetSum(int[] arr, int target) {
+
+        return isValid(0, arr, target);
+    }
+
+    public boolean isValid(int idx, int arr[], int target){
+        if(target == 0){
+            return true;
+        }
+
+        if(idx == arr.length){
+            return false;
+        }
+
+        boolean notTaken = isValid(idx + 1, arr, target);
+        boolean taken = false;
+
+        if(!notTaken && target >= arr[idx]){
+            taken = isValid(idx + 1, arr, target - arr[idx]);
+        }
+
+        return taken || notTaken;
+    }
+
+    // TC :- O(2 ^ n) -- > n is size of array
+    // SC :- O(n) --> stack space
+}
+
+
+
+// .................................. MEMOIZATION ...........................................
+
+class Solution {
+    public boolean isSubsetSum(int[] arr, int target) {
+        int dp[][] = new int[arr.length + 1][target + 1];
+        return isValid(0, arr, target, dp);
+    }
+
+    public boolean isValid(int idx, int arr[], int target, int dp[][]){
+        if(target == 0){
+            dp[idx][target] = 1;
+            return true;
+        }
+
+        if(idx == arr.length){
+            return false;
+        }
+
+        if(dp[idx][target] != 0){
+            return dp[idx][target] == 1;
+        }
+
+        boolean notTaken = isValid(idx + 1, arr, target, dp);
+        boolean taken = false;
+
+        if(!notTaken && target >= arr[idx]){
+            taken = isValid(idx + 1, arr, target - arr[idx], dp);
+        }
+
+        dp[idx][target] = (taken || notTaken) == true ? 1 : -1;
+        return dp[idx][target] == 1;
+    }
+
+    // TC :- O(n * target) -- > n is size of array 
+    // SC :- O(n) --> stack space + O(n * target) dp space
+}
+
+// .................................... TABULATION ...........................................
+class Solution {
+    public boolean isSubsetSum(int[] arr, int target) {
+        int dp[][] = new int[arr.length + 1][target + 1];
+        for(int i = 0 ; i < dp.length; i++){
+            dp[i][0] = 1;
+        }
+
+        for(int i = 1; i <= target; i++){
+            dp[arr.length][i] = -1;
+        }
+
+        for(int idx = arr.length - 1; idx >= 0; idx --){
+            for(int j = 0; j <= target; j++){
+
+                boolean notTaken = dp[idx + 1][j] == 1;
+                boolean taken = false;
+
+                if(!notTaken && j >= arr[idx]){
+                    taken = dp[idx + 1][j - arr[idx]] == 1;
+                }
+
+                dp[idx][j] = (taken || notTaken) == true ? 1 : -1;
+            }
+        }
+
+        return dp[0][target] == 1;
+    }
+}
+
+// TC :- O(n * target) -- > n is size of array 
+// SC :- O(n * target) dp space
+    
+
+// .......................................... SPACE OPTIMIZATION ...........................................
+class Solution {
+    public boolean isSubsetSum(int[] arr, int target) {
+        int dp[] = new int[target + 1];
+        dp[0] = 1;
+
+        for(int idx = arr.length - 1; idx >= 0; idx --){
+            int newDp[] = new int[target + 1];
+            for(int j = 0; j <= target; j++){
+
+                boolean notTaken = dp[j] == 1;
+                boolean taken = false;
+
+                if(!notTaken && j >= arr[idx]){
+                    taken = dp[j - arr[idx]] == 1;
+                }
+
+                newDp[j] = (taken || notTaken) == true ? 1 : -1;
+            }
+            dp = newDp;
+        }
+
+        return dp[target] == 1;
+    }
+}
+
+// TC :- O(n * target) -- > n is size of array 
+// SC :- O(target) dp space
+    
