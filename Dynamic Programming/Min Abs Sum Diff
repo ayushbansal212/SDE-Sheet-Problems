@@ -1,0 +1,165 @@
+// ...................... Recursive Solution ......................
+class Solution {
+    public int minDifference(int[] arr, int n) {
+
+        int totalSum = 0;
+        for(int num : arr){
+            totalSum += num;
+        }
+
+        int val1 = totalSum / 2;
+        int val1Diff = findDiff(0, val1, arr);
+
+        int val2 = totalSum - val1;
+        return Math.abs(val1 - val2) + (2 * val1Diff);
+    }
+
+    public int findDiff(int idx, int target, int arr[]){
+
+        if(idx == arr.length || target == 0){
+            return target;
+        }
+
+        int notTaken = findDiff(idx + 1, target, arr);
+        int taken = target;
+
+        if(arr[idx] <= target){
+            taken = findDiff(idx + 1, target - arr[idx], arr);
+        }
+
+        return Math.min(taken, notTaken);
+    }
+
+}
+
+//  TC :- O(2^n) 
+// SC :- O(N) for recursion stack 
+
+
+
+// .............................. MEMOIZATION ...........................................
+class Solution {
+    public int minDifference(int[] arr, int n) {
+
+        int totalSum = 0;
+        for(int num : arr){
+            totalSum += num;
+        }
+
+
+        int val1 = totalSum / 2;
+        int dp[][] = new int[arr.length][val1 + 1];
+
+        for(int arr1[] : dp){
+            Arrays.fill(arr1, -1);
+        }
+        int val1Diff = findDiff(0, val1, arr, dp);
+
+        int val2 = totalSum - val1;
+        return Math.abs(val1 - val2) + (2 * val1Diff);
+    }
+
+    public int findDiff(int idx, int target, int arr[], int dp[][]){
+
+        if(idx == arr.length || target == 0){
+            return target;
+        }
+
+        if(dp[idx][target] != -1){
+            return dp[idx][target];
+        }
+
+        int notTaken = findDiff(idx + 1, target, arr, dp);
+        int taken = target;
+
+        if(arr[idx] <= target){
+            taken = findDiff(idx + 1, target - arr[idx], arr, dp);
+        }
+
+        return dp[idx][target] = Math.min(taken, notTaken);
+    }
+
+}
+
+//  TC :- O(n * totalSum / 2) = O(n * totalSum)
+// SC :- O(N) for recursion stack + O(n * totalSum/ 2) dp array
+
+// .................................. TABULATION ...........................................
+
+class Solution {
+    public int minDifference(int[] arr, int n) {
+
+        int totalSum = 0;
+        for(int num : arr){
+            totalSum += num;
+        }
+
+        int val1 = totalSum / 2;
+        int dp[][] = new int[arr.length + 1][val1 + 1];
+        
+        for(int i = 0; i <= val1; i++){
+            dp[arr.length][i] = i;
+        }
+
+        for(int idx = arr.length - 1; idx >= 0; idx--){
+            for(int target = 0; target <= val1; target ++){
+                int notTaken = dp[idx + 1][target];
+                int taken = target;
+
+                if(arr[idx] <= target){
+                    taken = dp[idx + 1][target - arr[idx]];
+                }
+
+                dp[idx][target] = Math.min(taken, notTaken);
+            }
+        }
+
+        int val1Diff = dp[0][val1];
+        int val2 = totalSum - val1;
+        return Math.abs(val1 - val2) + (2 * val1Diff);
+    }
+}
+
+//  TC :- O(n * totalSum / 2) = O(n * totalSum)
+// SC :- O(n * totalSum/ 2) dp array
+
+// ........................................ SPACE OPTIMIZATION ...........................................
+
+class Solution {
+    public int minDifference(int[] arr, int n) {
+
+        int totalSum = 0;
+        for(int num : arr){
+            totalSum += num;
+        }
+
+        int val1 = totalSum / 2;
+        int dp[] = new int[val1 + 1];
+        
+        for(int i = 0; i <= val1; i++){
+            dp[i] = i;
+        }
+
+        for(int idx = arr.length - 1; idx >= 0; idx--){
+            int newDp[] = new int[val1 + 1];
+            for(int target = 0; target <= val1; target ++){
+                int notTaken = dp[target];
+                int taken = target;
+
+                if(arr[idx] <= target){
+                    taken = dp[target - arr[idx]];
+                }
+
+                newDp[target] = Math.min(taken, notTaken);
+            }
+            dp = newDp;
+        }
+
+        int val1Diff = dp[val1];
+        int val2 = totalSum - val1;
+        return Math.abs(val1 - val2) + (2 * val1Diff);
+    }
+}
+
+//  TC :- O(n * totalSum / 2) = O(n * totalSum)
+// SC :- O(n * totalSum/ 2) dp array
