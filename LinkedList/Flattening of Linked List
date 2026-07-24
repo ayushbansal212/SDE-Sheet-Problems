@@ -1,0 +1,35 @@
+
+
+
+// ...................................... Optimized Solution ......................................
+
+class Solution {
+    public ListNode flattenLinkedList(ListNode head) {
+        PriorityQueue<ListNode> pq = new PriorityQueue<>((a,b) -> a.val - b.val);
+        ListNode temp = head;
+
+        while(temp != null){
+            pq.add(temp);
+            temp = temp.next;
+        }
+
+        ListNode dummy = new ListNode();
+        ListNode dummyTemp = dummy;
+
+        while(!pq.isEmpty()){
+            ListNode curr = pq.poll();
+            dummyTemp.child = curr;
+            if(curr.child != null){
+                pq.add(curr.child);
+            }
+            dummyTemp = dummyTemp.child;
+        }
+
+        return dummy.child;
+
+    }
+}
+
+Time Complexity :- O(M * N) + O(T log(N)) == O(T log (N)) --> T = M * N where N is number of lists and m is total childs in each list
+
+Space Complexity :- O(N) --> priority queue is used for storing N nodes at a time
