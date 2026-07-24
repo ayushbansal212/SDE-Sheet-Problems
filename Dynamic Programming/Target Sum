@@ -101,7 +101,7 @@ class Solution {
 // SC :- O(n * target) dp space
     
 
-// .......................................... SPACE OPTIMIZATION ...........................................
+// .......................................... SPACE OPTIMIZATION ..........................................
 class Solution {
     public boolean isSubsetSum(int[] arr, int target) {
         int dp[] = new int[target + 1];
