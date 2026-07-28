@@ -1,0 +1,151 @@
+// .......................... Recursion ...................................................
+
+class Solution {
+    private final int MAX = (int)(1e8);
+    public int MinimumCoins(int[] coins, int amount) {
+        int ans = minCoins(coins, amount, 0);
+        return ans == MAX ? -1 : ans;
+
+    }
+
+    public int minCoins(int coins[], int amount, int idx){
+        if(amount == 0){
+            return 0;
+        }
+
+        if(idx == coins.length){
+            return MAX;
+        }
+
+        int ans = MAX;
+        int notTaken = minCoins(coins, amount, idx + 1);
+        int taken = MAX;
+        if(coins[idx] <= amount){
+            taken = 1 + minCoins(coins, amount - coins[idx], idx);
+        }
+        ans = Math.min(ans, Math.min(taken, notTaken));
+        return ans;
+    }
+}
+
+// TC  :- O(2 ^ n);
+// SC :- O(n);
+
+
+// ............................... Memoization .................................................
+
+class Solution {
+    private final int MAX = (int)(1e8);
+    public int MinimumCoins(int[] coins, int amount) {
+        int dp[][] = new int[coins.length + 1][amount + 1];
+        for(int arr[] : dp){
+            Arrays.fill(arr, MAX);
+        }
+        int ans = minCoins(coins, amount, 0, dp);
+        return ans == MAX ? -1 : ans;
+
+    }
+
+    public int minCoins(int coins[], int amount, int idx, int [][]dp){
+        if(amount == 0){
+            return dp[idx][amount] = 0;
+        }
+
+        if(idx == coins.length){
+            return MAX;
+        }
+
+        if(dp[idx][amount] != MAX){
+            return dp[idx][amount];
+        }
+
+        int ans = MAX;
+        int notTaken = minCoins(coins, amount, idx + 1, dp);
+        int taken = MAX;
+        if(coins[idx] <= amount){
+            taken = 1 + minCoins(coins, amount - coins[idx], idx, dp);
+        }
+        ans = Math.min(ans, Math.min(taken, notTaken));
+        return dp[idx][amount] = ans;
+    }
+}
+
+// TC  :- O(amount * n);
+// SC :- O(amount * n) + O(n);
+
+
+// ................................. Tabulation .................................................
+
+class Solution {
+    private final int MAX = (int)(1e8);
+    public int MinimumCoins(int[] coins, int amount) {
+        int dp[][] = new int[coins.length + 1][amount + 1];
+        for(int i = 0; i < coins.length + 1; i ++){
+            dp[i][0] = 0;
+        }
+
+        for(int i = 0; i <= amount; i++){
+            dp[coins.length][i] = MAX;
+        }
+
+        for(int idx = coins.length - 1; idx >= 0; idx --){
+            // System.out.println
+            for(int currAmount = 1; currAmount <= amount; currAmount ++){
+                int ans = MAX;
+                for(int i = idx; i < coins.length; i++){
+                    int notTaken = dp[i + 1][currAmount];
+                    int taken = MAX;
+                    if(coins[i] <= currAmount){
+                        taken = 1 + dp[i][currAmount - coins[i]];
+                    }
+                    ans = Math.min(ans, Math.min(taken, notTaken));
+                }
+                dp[idx][currAmount] = ans;
+            }
+        }
+
+
+        int ans = dp[0][amount];
+        return ans == MAX ? -1 : ans;
+
+    }
+}
+
+// TC  :- O(amount * n);
+// SC :- O(amount * n);
+
+// ........................................... Space Optimization .................................................
+
+class Solution {
+    private final int MAX = (int)(1e8);
+    public int MinimumCoins(int[] coins, int amount) {
+        int dp[] = new int[amount + 1];
+
+        for(int i = 1; i <= amount; i++){
+            dp[i] = MAX;
+        }
+
+        for(int idx = coins.length - 1; idx >= 0; idx --){
+            // System.out.println
+            int newDp[] = new int[amount + 1];  
+            for(int currAmount = 1; currAmount <= amount; currAmount ++){
+                int ans = MAX;
+                int notTaken = dp[currAmount];
+                int taken = MAX;
+                if(coins[idx] <= currAmount){
+                    taken = 1 + newDp[currAmount - coins[idx]];
+                }
+                ans = Math.min(ans, Math.min(taken, notTaken));
+                newDp[currAmount] = ans;
+            }
+            dp = newDp;
+        }
+
+        int ans = dp[amount];
+        return ans == MAX ? -1 : ans;
+
+    }
+}
+
+TC :- O(amount * n);
+SC :- O(amount);
