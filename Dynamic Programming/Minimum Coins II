@@ -1,0 +1,133 @@
+// ............................... Recursion .................................................
+
+class Solution {
+    private final int MOD = (int)(1e9) + 7;
+    public int count(int[] coins, int N, int amount) {
+        return possibleCombinations(coins, amount, 0);
+      
+    }
+
+    public int possibleCombinations(int coins[], int amount, int idx){
+        if(amount == 0){
+            return 1;
+        }
+
+        if(idx == coins.length){
+            return 0;
+        }
+
+        long taken = 0;
+        long notTaken = possibleCombinations(coins, amount, idx + 1);
+
+        if(coins[idx] <= amount){
+            taken = possibleCombinations(coins, amount - coins[idx], idx);
+        }
+
+        return (int)((taken + notTaken) % MOD);
+    }
+}
+
+// TC :- o(2 ^n) where n is the number of coins
+// SC :- o(n) where n is the number of coins
+
+// .................................Memoization.................................................
+
+class Solution {
+    private final int MOD = (int)(1e9) + 7;
+    public int count(int[] coins, int N, int amount) {
+        int dp[][] = new int[N + 1][amount + 1];
+
+        for(int arr[] : dp){
+            Arrays.fill(arr, -1);
+        }
+        return possibleCombinations(coins, amount, 0, dp);
+      
+    }
+
+    public int possibleCombinations(int coins[], int amount, int idx, int dp[][]){
+        if(amount == 0){
+            return 1;
+        }
+
+        if(idx == coins.length){
+            return 0;
+        }
+
+        if(dp[idx][amount] != -1){
+            return dp[idx][amount];
+        }
+
+        long taken = 0;
+        long notTaken = possibleCombinations(coins, amount, idx + 1, dp);
+
+        if(coins[idx] <= amount){
+            taken = possibleCombinations(coins, amount - coins[idx], idx, dp);
+        }
+
+        return dp[idx][amount] = (int)((taken + notTaken) % MOD);
+
+    }
+}
+// TC :- O(n * amount) where n is the number of coins and amount is the target amount;
+// SC :- O(n * amount) + O(N);
+
+// .................................................Tabulation.................................................
+
+class Solution {
+    private final int MOD = (int)(1e9) + 7;
+    public int count(int[] coins, int N, int amount) {
+        int dp[][] = new int[N + 1][amount + 1];
+
+        for(int i = 0; i < N + 1; i++){
+            dp[i][0] = 1;
+        }
+
+        for(int idx = N - 1; idx >= 0; idx --){
+            for(int currAmount = 1; currAmount <= amount; currAmount ++){
+                long taken = 0;
+                long notTaken = dp[idx + 1][currAmount];
+
+                if(coins[idx] <= currAmount){
+                    taken = dp[idx][currAmount - coins[idx]];
+                }
+                dp[idx][currAmount] = (int)((taken + notTaken) % MOD);
+            }
+        }
+        return dp[0][amount];
+      
+    }
+}
+// TC :- O(n * amount);
+// SC :- O(n * amount);
+
+// ............................. Space Optimization.................................................
+
+class Solution {
+    private final int MOD = (int)(1e9) + 7;
+    public int count(int[] coins, int N, int amount) {
+        int prev[] = new int[amount + 1];
+
+        for(int i = 0; i < N + 1; i++){
+            prev[0] = 1;
+        }
+
+        for(int idx = N - 1; idx >= 0; idx --){
+            int curr[] = new int[amount + 1];
+            curr[0] = 1;
+            for(int currAmount = 1; currAmount <= amount; currAmount ++){
+                long taken = 0;
+                long notTaken = prev[currAmount];
+
+                if(coins[idx] <= currAmount){
+                    taken = prev[currAmount - coins[idx]];
+                }
+                curr[currAmount] = (int)((taken + notTaken) % MOD);
+            }
+            prev = curr;
+        }
+        return prev[amount];
+      
+    }
+}
+// TC :- O(n * amount);
+// SC :- O(amount);
