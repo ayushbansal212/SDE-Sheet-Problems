@@ -1,0 +1,104 @@
+// ...................................Recursion......................................
+
+class Solution {
+    public int unboundedKnapsack(int[] wt, int[] val, int n, int W) {
+        
+        return maxValue(wt, val, W, 0);
+    }
+
+    public int maxValue(int wt[], int val[], int weight, int idx){
+        if(weight == 0 || idx == wt.length){
+            return 0;
+        }
+
+        int taken = wt[idx] <= weight ? val[idx] + maxValue(wt, val, weight - wt[idx], idx) : 0;
+        int notTaken = maxValue(wt, val, weight, idx + 1);
+
+        return Math.max(taken, notTaken);
+    }
+}
+
+// Time Complexity :- Exponential --> we might remain on same idx in worst case due to infinite availabilty of same bag
+
+// Space Complexity :- O(N)
+
+
+// ....................................... Memoization ..........................
+
+class Solution {
+    public int unboundedKnapsack(int[] wt, int[] val, int n, int W) {
+        int dp[][] = new int[n + 1][W + 1];
+
+        for(int arr[] : dp){
+            Arrays.fill(arr, -1); // -1 shows that this state is not visited yet
+        }
+        return maxValue(wt, val, W, 0, dp);
+    }
+
+    public int maxValue(int wt[], int val[], int weight, int idx, int dp[][]){
+        if(weight == 0 || idx == wt.length){
+            return 0;
+        }
+
+        if(dp[idx][weight] != -1){
+            return dp[idx][weight];
+        }
+
+        int taken = wt[idx] <= weight ? val[idx] + maxValue(wt, val, weight - wt[idx], idx, dp) : 0;
+        int notTaken = maxValue(wt, val, weight, idx + 1, dp);
+
+        return dp[idx][weight] = Math.max(taken, notTaken);
+    }
+}
+
+// Time Complexity :- O(n * wt)
+
+// Space Complexity :- O(N) + O(w * n);
+
+// ............................... Tabulation ...................................................
+
+class Solution {
+    public int unboundedKnapsack(int[] wt, int[] val, int n, int w) {
+        int dp[][] = new int[n + 1][w + 1];
+
+        for(int idx = wt.length - 1; idx >= 0; idx --){
+            for(int weight = 0; weight <= w; weight ++){
+
+                int taken = wt[idx] <= weight ? val[idx] + dp[idx][weight - wt[idx]] : 0;
+                int notTaken = dp[idx + 1][weight];
+
+                dp[idx][weight] = Math.max(taken, notTaken);
+            }
+        }
+        return dp[0][w];
+    }
+}
+
+// Time Complexity :- O(n * wt)
+
+// Space Complexity :- O(w * n);
+
+
+// ...........................................Space Optimization...................................................
+
+class Solution {
+    public int unboundedKnapsack(int[] wt, int[] val, int n, int w) {
+        int prev[] = new int[w + 1];
+
+        for(int idx = wt.length - 1; idx >= 0; idx --){
+            int curr[] = new int[w + 1];
+            for(int weight = 0; weight <= w; weight ++){
+
+                int taken = wt[idx] <= weight ? val[idx] + curr[weight - wt[idx]] : 0;
+                int notTaken = prev[weight];
+
+                curr[weight] = Math.max(taken, notTaken);
+            }
+            prev = curr;
+        }
+        return prev[w];
+    }
+}
+
+// Time Complexity :- O(n * wt)
+// Space Complexity :- O(w);
