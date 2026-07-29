@@ -1,0 +1,96 @@
+// ............................. Recursion.................................
+
+class Solution{
+    public int RodCutting(int price[], int n) {
+
+        return maxValue(price, 1, n);
+    }
+
+    public int maxValue(int price[], int length, int remLength){
+        if(remLength == 0 || length > price.length){
+            return 0;
+        }
+
+        int cut = remLength >= length ? price[length - 1] + maxValue(price, length, remLength - length) : 0;
+        int notCut = maxValue(price, length + 1, remLength);
+
+        return Math.max(cut, notCut);
+    }
+}
+
+// TC :- Exponential
+// SC :- O(n)
+
+// ............................. Memoization.................................
+
+class Solution{
+    public int RodCutting(int price[], int n) {
+        int dp[][] = new int[n + 1][n + 1];
+        for(int arr[] : dp){
+            Arrays.fill(arr, -1);
+        }
+        return maxValue(price, 1, n, dp);
+    }
+
+    public int maxValue(int price[], int length, int remLength, int dp[][]){
+        if(remLength == 0 || length > price.length){
+            return 0;
+        }
+
+        if(dp[length][remLength] != -1){
+            return dp[length][remLength];
+        }
+
+        int cut = remLength >= length ? price[length - 1] + maxValue(price, length, remLength - length, dp) : 0;
+        int notCut = maxValue(price, length + 1, remLength, dp);
+
+        return dp[length][remLength] = Math.max(cut, notCut);
+    }
+}
+
+// TC :- O(n * n)
+// SC :- O(n) + O(n * n)
+
+// ............................. Tabulation.................................
+class Solution{
+    public int RodCutting(int price[], int n) {
+        int dp[][] = new int[n + 2][n + 1];
+        
+        for(int length = n; length > 0; length --){
+            for(int remLength = 0; remLength <= n; remLength ++){
+                int cut = remLength >= length ? price[length - 1] + dp[length][remLength - length] : 0;
+                int notCut = dp[length + 1][remLength];
+
+                dp[length][remLength] = Math.max(cut, notCut);
+            }
+        }
+        return dp[1][n];
+    }
+
+}
+// TC :- O(n * n)
+// SC :- O(n * n)
+
+// .............................. Space Optimization .................................
+
+class Solution{
+    public int RodCutting(int price[], int n) {
+        int prev[] = new int[n + 1];
+
+        for(int length = n; length > 0; length --){
+            int curr[] = new int[n + 1];
+            for(int remLength = 0; remLength <= n; remLength ++){
+                int cut = remLength >= length ? price[length - 1] + curr[remLength - length] : 0;
+                int notCut = prev[remLength];
+
+                curr[remLength] = Math.max(cut, notCut);
+            }
+            prev = curr;
+        }
+        return prev[n];
+    }
+
+}
+// TC :- O(n * n)
+// SC :- O(n)
+
