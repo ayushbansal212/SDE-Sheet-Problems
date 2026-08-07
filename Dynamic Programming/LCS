@@ -1,0 +1,163 @@
+// .............. RECURSION Brute Force.................
+class Solution {
+    public int lcs( String str1, String str2) {
+        Set<String> subsequencesOfS =  new HashSet<>();
+        generateSubsequences(str1, subsequencesOfS, 0, new StringBuilder());
+
+        return generateSubsequencesOfStr2(str2, 0, new StringBuilder(), subsequencesOfS);
+    }
+
+    public void generateSubsequences(String s, Set<String> subsequencesOfS, int idx, StringBuilder sb){
+        if(idx == s.length()){
+            subsequencesOfS.add(sb.toString());
+            return;
+        }
+
+        // index added
+        sb.append(s.charAt(idx));
+        generateSubsequences(s, subsequencesOfS, idx + 1, sb);
+
+        // remove index
+        sb.deleteCharAt(sb.length() - 1);
+        generateSubsequences(s, subsequencesOfS, idx + 1, sb);
+
+        generateSubsequences(s, subsequencesOfS, idx + 1, sb);
+        return;
+    }
+
+    public int generateSubsequencesOfStr2(String s, int idx, StringBuilder sb, Set<String> subsequencesOfS){
+        
+        if(idx == s.length()){
+            if(subsequencesOfS.contains(sb.toString())){
+                return sb.length();
+            }
+            else{
+                return 0;
+            }
+        }
+
+        // index added
+        sb.append(s.charAt(idx));
+        int taken = generateSubsequencesOfStr2(s, idx + 1, sb, subsequencesOfS);
+
+        // remove index
+        sb.deleteCharAt(sb.length() - 1);
+        int notTaken = generateSubsequencesOfStr2(s, idx + 1, sb, subsequencesOfS);
+
+        return Math.max(taken, notTaken);
+    }
+}
+
+// ............................RECURSION LCS Pattern...........................
+
+class Solution {
+    public int lcs( String s, String t) {
+        return findLCS(s, t, 0, 0);
+    }
+
+    public int findLCS(String s, String t, int i, int j){
+
+        if(i == s.length() || j == t.length()){
+            return 0;
+        }
+
+        if(s.charAt(i) == t.charAt(j)){
+            return 1 + findLCS(s, t, i + 1, j + 1);
+        }
+
+        int first = findLCS(s, t, i, j + 1);
+        int second = findLCS(s, t, i + 1, j);
+
+        return Math.max(first, second);
+    }
+}
+
+
+// ................................ MEMOIZATION ...........................................
+class Solution {
+    public int lcs( String s, String t) {
+        int dp[][]  = new int[s.length()][t.length()];
+        for(int arr[] : dp){
+            Arrays.fill(arr, -1);
+        }
+        return findLCS(s, t, 0, 0, dp);
+    }
+
+    public int findLCS(String s, String t, int i, int j, int dp[][]){
+
+        if(i == s.length() || j == t.length()){
+            return 0;
+        }
+
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+
+        if(s.charAt(i) == t.charAt(j)){
+            return 1 + findLCS(s, t, i + 1, j + 1, dp);
+        }
+
+        int first = findLCS(s, t, i, j + 1, dp);
+        int second = findLCS(s, t, i + 1, j, dp);
+
+        return dp[i][j] = Math.max(first, second);
+    }
+}
+
+// TC - O(m * n)
+// SC - O(N) + O(m * n)
+
+// ................................ TABULATION ...........................................
+class Solution {
+    public int lcs( String s, String t) {
+        int dp[][]  = new int[s.length() + 1][t.length() + 1];
+
+        for(int i = s.length() - 1; i >= 0; i--){
+            for(int j = t.length() - 1; j >= 0; j--){
+                if(s.charAt(i) == t.charAt(j)){
+                    dp[i][j] = 1 + dp[i + 1][j + 1];
+                    continue;
+                }
+
+                int first = dp[i][j + 1];
+                int second = dp[i + 1][j];
+
+                dp[i][j] = Math.max(first, second);
+            }
+        }
+
+        return dp[0][0];
+    }
+}
+
+// TC - O(m * n)
+// SC - O(m * n)
+
+// ................................ SPACE OPTIMIZATION ...........................................
+class Solution {
+    public int lcs( String s, String t) {
+        int prev[] = new int[t.length() + 1];
+
+        for(int i = s.length() - 1; i >= 0; i--){
+            int curr[] = new int[t.length() + 1];
+            for(int j = t.length() - 1; j >= 0; j--){
+                if(s.charAt(i) == t.charAt(j)){
+                    curr[j] = 1 + prev[j + 1];
+                    continue;
+                }
+
+                int first = curr[j + 1];
+                int second = prev[j];
+
+                curr[j] = Math.max(first, second);
+            }
+            prev = curr;
+        }
+
+        return prev[0];
+    }
+}
+
+// TC - O(m * n)
+// SC - O(n)
+
